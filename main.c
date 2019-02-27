@@ -77,20 +77,15 @@ static void Init_Shift_Registers() {
   SPI_Cmd(SPI1, ENABLE);
 }
 
+// This function provides a middleware interface to send the light setup to the board
 static void Send_Data_To_Shift_Registers(uint32_t light_setup) {
   SPI_I2S_SendData(SPI1, light_setup >> 14);
-  while ((SPI1->SR & SPI_SR_TXE) == 0) {
-  }  // might be able to remove
   while (SPI1->SR & SPI_SR_BSY) {
   }
   SPI_I2S_SendData(SPI1, light_setup >> 7);
-  while ((SPI1->SR & SPI_SR_TXE) == 0) {
-  }
   while (SPI1->SR & SPI_SR_BSY) {
   }
   SPI_I2S_SendData(SPI1, light_setup);
-  while ((SPI1->SR & SPI_SR_TXE) == 0) {
-  }
   while (SPI1->SR & SPI_SR_BSY) {
   }
 }
@@ -151,7 +146,7 @@ void Traffic_Adjustment_Task() {
 // counter. What this does is send more cars if the adc value is lower(higher
 // resistance) and sends less cars if it is higher(lower resistance)
 int New_Car_Arrival(uint16_t adc_val, uint16_t counter) {
-  if (counter * 250 >= adc_val) {
+  if (counter * 250 >= adc_val+3000) {
     return 1;
   }
   return 0;
