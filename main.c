@@ -262,7 +262,8 @@ void Traffic_Display_Task() {
   uint32_t shifted_traffic;
   for (;;) {
     new_car = 0;
-    xQueueReceive(DisplayTrafficQueue, &new_car, 2000);
+    vTaskDelay(1000);
+    xQueueReceive(DisplayTrafficQueue, &new_car, 0);
     // If the light is red or yellow, we want to keep queuing up cars before the
     // intersection but allow cars inside and after the intersection to keep
     // moving.
